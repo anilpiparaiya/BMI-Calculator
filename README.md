@@ -1,1 +1,1 @@
-# BMI-Calculator with JavaScript
+# A simple calculator app with JavaScript

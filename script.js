@@ -1,37 +1,56 @@
-let button = document.getElementById('btn');
+var buttons = document.getElementsByClassName("button");
+var display = document.getElementById("display");
 
-button.addEventListener('click', () => {
-    const height = parseInt(document.getElementById('height').value);
-    const weight = parseInt(document.getElementById('weight').value);
-    const result = document.getElementById('output');
-    let height_status=false, weight_status=false;
+// display.textContent = 0;
+var operand1 = 0;
+var operand2 = null;
+var operator = null; 
 
-    if(height === '' || isNaN(height) || (height <= 0)){
-        document.getElementById('height_error').innerHTML = 'Please provide a valid height';
-    }else{
-        document.getElementById('height_error').innerHTML = '';
-        height_status=true;
-    }
+function isOperator(value) {
+    return value == "+" || value == "-" || value == "*" || value == "/";
+}
 
-    if(weight === '' || isNaN(weight) || (weight <= 0)){
-        document.getElementById('weight_error').innerHTML = 'Please provide a valid weight';
-    }else{
-        document.getElementById('weight_error').innerHTML = '';
-        weight_status=true;
-    }
+for (var i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener('click', function () {
 
-    if(height_status && weight_status){
-        const bmi = (weight / ((height*height)/10000)).toFixed(2);
+        var value = this.getAttribute('data-value');
+        var text = display.textContent.trim();
 
-        if(bmi < 18.6){
-            result.innerHTML = 'Under weight : ' + bmi;
-        }else if(bmi >= 18.6 && bmi < 24.9){
-            result.innerHTML = 'Normal : ' + bmi;
-        }else{
-            result.innerHTML = 'Over weight : ' + bmi;
+        if (isOperator(value)) {
+            operator = value;
+            operand1 = parseFloat(text);
+            display.textContent = "";
+        } 
+        else if (value == "ac") {
+            display.textContent = "";
+        } 
+        else if (value == "sign") {
+            operand1 = parseFloat(text);
+            operand1 = -1 * operand1;
+            display.textContent = operand1;
+        } 
+        else if (value == ".") {
+            if (text.length && !text.includes('.')) {
+                display.textContent = text + '.';
+            }
+        } 
+        else if (value == "%") {
+            operand1 = parseFloat(text);
+            operand1 = operand1 / 100;
+            display.textContent = operand1
+        } 
+        else if (value == "=") {
+            operand2 = parseFloat(text);
+            var result = eval(operand1 + ' ' + operator + ' ' + operand2);
+            if (result) 
+            {
+                display.textContent = result;
+                operand1 = result;
+                operand2 = null;
+                operator = null;
+            }
+        } else {
+            display.textContent += value;
         }
-    }else{
-        alert('The form has errors');
-        result.innerHTML = '';
-    }
-});
+    });
+}
